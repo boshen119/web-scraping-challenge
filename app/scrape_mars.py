@@ -53,9 +53,29 @@ def featured_image(browser):
     return img_url
 
 def hemisphere(browser):
+    url = (
+        "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target"
+    )
+    browser.visit(url)
+    hem_image_urls = []
+    for item in items:
+        title = item.find('h3').text
+        end_url = item.find('a', class_="itemLink product-item")['href']
+        browser.visit(hem_base_url + end_url)
+        end_img_html = browser.html
+        img_soup = bs(end_img_html, 'html.parser')
+        img_url = img_soup.find('img', class_="wide-image")['src']
+        hem_image_urls.append({"title":title, "img_url": hem_base_url + img_url})
+        browser.back()
     return
 
 def twitter_weather(browser):
+    mars_weather_url = 'https://twitter.com/marswxreport?lang=en'
+    weather = requests.get(mars_weather_url)
+    weather_soup = bs(weather.text, 'html.parser')
+    print(weather_soup.prettify())
+    mars_tweet = weather_soup.find('p', class_="js-tweet-text").text
+    print(mars_tweet)
     return
 
 def scrape_hemisphere(html_text):
@@ -83,6 +103,8 @@ def scrape_all():
         "news_title" : news_title,
         "news_paragraph" : news_paragraph,
         "featured_img" : featured_image(browser),
+        "hemisphere" : hemisphere(browser),
+        "weather" : twitter_weather(browser)
         "facts": mars_facts(),
         "last_modified": dt.datetime.now()
     }
