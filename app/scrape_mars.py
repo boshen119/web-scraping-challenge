@@ -78,10 +78,6 @@ def twitter_weather(browser):
     print(mars_tweet)
     return
 
-def scrape_hemisphere(html_text):
-
-    return
-
 def mars_facts():
     try:
         df = pd.read_html("https://space_facts.come/mars/")[0]
